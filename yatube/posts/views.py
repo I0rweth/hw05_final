@@ -33,12 +33,8 @@ def profile(request, username):
                                     ).order_by('-pub_date')
     page_obj = paginator(request=request, post=post_list)
     post_count = post_list.count()
-    if request.user.is_authenticated:
-        following = Follow.objects.filter(
-            user=request.user, author=author
-        ).exists()
-    else:
-        following = False
+    following = request.user.is_authenticated and Follow.objects.filter(
+        user=request.user, author=author).exists()
     context = {
         'author': author,
         'post_count': post_count,
@@ -135,6 +131,8 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
-    Follow.objects.filter(author__username=username,
-                          user=request.user).delete()
+    follower = Follow.objects.filter(author__username=username,
+                                     user=request.user)
+    if follower.exists():
+        follower.delete()
     return redirect('posts:profile', username)

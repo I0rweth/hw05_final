@@ -82,4 +82,4 @@ class PostURLTests(TestCase):
     def test_url_403_uses_custom_template(self):
         """Проверка статуса 403"""
         response = HttpResponseForbidden(reverse('posts:index'))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
